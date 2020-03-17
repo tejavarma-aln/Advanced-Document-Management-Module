@@ -9,7 +9,7 @@ namespace DocumentLinker
     public class Dlinker
     {
 
-        public String LauchDialog(int multiselect)
+        public String LaunchDialog(int multiselect)
         {
             try
             {
