@@ -38,7 +38,7 @@
 [COM Interface:MsFileDialog]
 	Project:DocumentLinker
 	Class:Dlinker
-	Interface:LauchDialog
+	Interface:LaunchDialog
 	Parameter:p1:Integer
 	Return:String
 
