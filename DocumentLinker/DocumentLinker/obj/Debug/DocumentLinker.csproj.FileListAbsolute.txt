@@ -1,4 +1,0 @@
-G:\C#.NET-Projects\DocumentLinker\DocumentLinker\bin\Debug\DocumentLinker.dll
-G:\C#.NET-Projects\DocumentLinker\DocumentLinker\bin\Debug\DocumentLinker.pdb
-G:\C#.NET-Projects\DocumentLinker\DocumentLinker\obj\Debug\DocumentLinker.dll
-G:\C#.NET-Projects\DocumentLinker\DocumentLinker\obj\Debug\DocumentLinker.pdb
