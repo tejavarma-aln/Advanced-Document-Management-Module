@@ -1,5 +1,0 @@
-G:\C#.NET-Projects\DocumentLinker\DocumentLinker\bin\Release\DocumentLinker.dll
-G:\C#.NET-Projects\DocumentLinker\DocumentLinker\bin\Release\DocumentLinker.pdb
-G:\C#.NET-Projects\DocumentLinker\DocumentLinker\obj\Release\DocumentLinker.dll
-G:\C#.NET-Projects\DocumentLinker\DocumentLinker\obj\Release\DocumentLinker.pdb
-G:\C#.NET-Projects\DocumentLinker\DocumentLinker\obj\Release\DocumentLinker.csprojAssemblyReference.cache
