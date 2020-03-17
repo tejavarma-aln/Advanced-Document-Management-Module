@@ -6,14 +6,14 @@ Link Documents with Vouchers and Masters
 
 **Get Started**
 
--> Download the files Documentlinker.dll , DocumentLinker.txt
--> Register the DLL as mention below
--> Load DocumentLinker.txt in tally as normal TDL
--> You will find an option at bottom of every voucher (Set/Alter Document Details ) dhich allows to Link documents
--> Select multiple options(Yes/No) or click SELECT MULTIPLE button vice-versa which allows to select multiple documents
--> Click SHOW DOCUMENTS button to display the linked documents
--> In List of Documents Select the Document (one at a time) by hitting Space Bar and click OPEN button the View the document
--> Optionally You can enter description/narration 
+1) Download the files Documentlinker.dll , DocumentLinker.txt
+2) Register the DLL as mention below
+3) Load DocumentLinker.txt in tally as normal TDL
+4) You will find an option at bottom of every voucher (Set/Alter Document Details ) dhich allows to Link documents
+5) Select multiple options(Yes/No) or click SELECT MULTIPLE button vice-versa which allows to select multiple documents
+6) Click SHOW DOCUMENTS button to display the linked documents
+7) In List of Documents Select the Document (one at a time) by hitting Space Bar and click OPEN button the View the document
+8) Optionally You can enter description/narration 
 
 **Registering DLL**
 
