@@ -1,0 +1,303 @@
+
+
+[Function:ExecuteFileDialog]
+	Variable:Fileparam:String
+	
+	01:If:$$IsCOMInterfaceInvokable:MsFileDialog
+	02:Exec COM Interface:MsFileDialog:@@CanSelectMultiDoc
+	03:Set:Fileparam:$$LastResult
+	04:List Delete Ex:MsFileName
+	05:For Token:TokenVar:##Fileparam:"|"
+	06:List Add Ex:MsFileName:##TokenVar
+	07:End For
+	08:Call:ProcessDialogResponse
+	09:Else:
+	10:Log:"Unable to invoke com interface"
+	11:End If
+	
+
+[Function:ProcessDialogResponse]
+	01:If:##MsFileName[0] = "OPFAILED"
+	02:Log:"Nothing Selected"
+	03:Else
+	04:if:##MsFileName[0] = "Error"
+	05:Msg Box:"Error":##MsFileName[1]
+	06:Else
+	07:Set Value:IDocumentPath:##Fileparam
+	08:End If
+	09:End If
+	10:Return
+	
+[System:Formulae]
+	CanSelectMultiDoc:if $CanSelectMultiple then 1 else 0
+	CurrentSelectedDoc : ($$Number:#IDocumentSlno) -1
+	
+[System:Variable]
+	List Var:MsFileName:String
+	
+[COM Interface:MsFileDialog]
+	Project:DocumentLinker
+	Class:Dlinker
+	Interface:LauchDialog
+	Parameter:p1:Integer
+	Return:String
+
+
+[#Report:Accounting Voucher]
+	Local:Form:Default:Add:Part:At End:IDocumentConfig
+	
+	
+[Part:IDocumentConfig]
+	Line:IDocumentFrameTrigger
+	
+[Line:IDocumentFrameTrigger]
+	Field:MediumPrompt,LogicalField
+	Local:Field:MediumPrompt:Set as:$$LocaleString:"Set/Alter Document Details"
+	Local:Field:MediumPrompt:Width:25
+	Local:Field:Logical Field:Show Table:Always
+	Local:Field:Logical Field:Set as:Yes
+	Local:Field:Logical Field:Sub Form:IDocumentReportFrame:$$Value
+	
+	
+[System:UDF]
+	IDocumentPath:String:5012
+	IDocumentDesc: String:5993
+	CanSelectMultiple:Logical:5467
+	IDocumentCPath:String:5234
+	IDocumentUser:String:5678
+	
+
+[Report:IDocumentReportFrame]
+	Form:IDocumentReportFrame
+	Title:$$LocaleString:"Add Documents"
+	
+[Form:IDocumentReportFrame]
+	Part:IDocumentReportFrame
+	Buttons:IDocumentBrowseBt,IDocumentShowBt,IDocumentSetMultiMode
+	
+[Part:IDocumentReportFrame]
+	Line:IDocumentReportTitle
+	Line:IDocumentFrame1
+	Line:IDocumentFrame2
+	Line:IDocumentFrame3
+	Line:IDocumentFrame4
+	Bottom Lines:IDocumentHelptext1,IDocumentHelptext2
+	Width:50% page
+	Space Left:1
+	Space Bottom:1
+	Space Right:1
+	Space Top:1
+	
+[Line:IDocumentReportTitle]
+	Field:Name Field
+	Local:Field:Name Field:Info:"Configure Document's Path"
+	Local:Field:Name Field:Align:Center
+	Local:Field:Name Field:Border:thinbottom
+	Local:Field:Name Field:Full Width:Yes
+		
+[Line:IDocumentFrame1]
+	Fields:MediumPrompt,IDocumentPath
+	Local:Field:MediumPrompt:Info:"Path"
+	Local:Field:MediumPrompt:Width:25
+	Local:Field:MediumPrompt:Style:Normal Bold
+	Space Top:3
+	Border:thinbottom
+	
+[Line:IDocumentFrame2]
+	Fields:MediumPrompt,IDocumentSelectionMode
+	Local:Field:MediumPrompt:Info:"Select Muiltiple Documents"
+	Local:Field:MediumPrompt:Width:25
+	Local:Field:MediumPrompt:Style:Normal Bold
+	Space Top:2
+	Space Bottom:1
+	Border:thinbottom
+	
+[Field:IDocumentSelectionMode]
+	Use:LogicalField
+	Show Table:Always
+	Set as:No
+	Storage:CanSelectMultiple
+
+[Line:IDocumentFrame3]
+	Field:MediumPrompt,IDocumentDesc
+	Local:Field:MediumPrompt:Style:Normal Bold
+	Local:Field:MediumPrompt:Info:"Description"
+	Local:Field:MediumPrompt:Width:25
+	Space Top:2
+	Border:thinbottom
+	
+[Line:IDocumentFrame4]
+	Field:MediumPrompt,IDocumentUserName
+	Local:Field:MediumPrompt:Style:Normal Bold
+	Local:Field:MediumPrompt:Info:"Linked By"
+	Local:Field:MediumPrompt:Width:25
+	Space Top:2
+	
+[Field:IDocumentUserName]
+	Storage:IDocumentUser
+	Use:Name Field
+	Read Only:Yes
+	Set as:if $$InCreateMode then $$CmpUserName else $$Value
+	Skip Forward:Yes
+	Full Width:Yes
+	
+[Line:IDocumentHelptext1]
+	Field:SimpleField
+	Local:Field:SimpleField:Info:"* Click Alt+ B to browse the file"
+	Local:Field:SimpleField:Align:Center
+	Local:Field:SimpleField:Full Width:Yes
+
+[Line:IDocumentHelptext2]
+	Field:SimpleField
+	Local:Field:SimpleField:Info:"* Click Alt+ D to show attached documents"
+	Local:Field:SimpleField:Align:Center
+	Local:Field:SimpleField:Full Width:Yes
+	Space Top:0.5
+	
+[Field:IDocumentPath]
+	Storage:IDocumentPath
+	Use:Name Field
+	Read Only:Yes
+	Skip Forward:Yes
+	Full Width:Yes
+	Lines:4
+	
+	
+[Field:IDocumentDesc]
+	Use:Name Field
+	Max:250
+	Full Width:Yes
+	Storage:IDocumentDesc
+	Lines:5
+	
+[Button:IDocumentBrowseBt]
+    Title:"Browse"
+	Key:Alt + B
+	Action:Call:ExecuteFileDialog
+	
+[Button:IDocumentShowBt]
+   Title:"Show Documents"
+	Key:Alt + S
+	Action:Call:IDocViewHandler
+	
+
+ [Button:IDocumentSetMultiMode]
+	 Title:"Select Multiple"
+	 Key:Alt + M
+	 Action:Call:SetDocumentMode
+	 
+[Button:IDocumentOpenDocbt]
+	Title:"Open"
+	Key:Alt+O
+	Action:Call:IDocExceuteDocview
+	 
+[Function:SetDocumentMode]
+	01:Set Value:CanSelectMultiple:NOT $CanSelectMultiple
+	
+
+[Function:IDocViewHandler]
+	01:If:$$IsEmpty:$IDocumentPath
+	02:Msg Box:"No documents found":"Click browse button to select documents "
+	03:Else
+	04:List Delete Ex:MsFileName
+	05:For Token:TokenVar:$IDocumentPath:"|"
+	06:List Add Ex:MsFileName:##TokenVar
+	07:End For
+	08:Display:IDocumentViewer
+	09:End If
+
+	
+[Function:IDocExceuteDocview]
+	Variable:FileNameParam:String
+	01:If:($$NumItems:IDocumentViewReportSelected = 0)
+	02:Msg Box:"Empty":"Select the line to view the document"
+	03:Else
+	04:Set:FileNameParam:($$CollectionField:$IDocumentCPath:1:IDocumentViewReportSelected)
+	05:Exec Command:##FileNameParam
+    06:End If
+	07:Return
+
+[Collection:IDocumentPathColl]
+	Data Source:Variable:MsFileName
+	
+
+[Collection:IDocumentViewReportSelected]
+	Data Source:Report:Selected
+
+;;;;;;; Report to display Doc;;;;;;;;;;
+
+[Report:IDocumentViewer]
+	Title:"List of Documents"
+	Form:IDocumentViewer
+	
+[Form:IDocumentViewer]
+	Part:IDocumentFrame
+	Button:IDocumentOpenDocbt
+	
+[Part:IDocumentFrame]
+	Parts:IDocumentFrame1,IDocumentFrame2
+	Height:100% page
+	Width:50% page
+    Vertical:Yes
+	
+[Part:IDocumentFrame1]
+	Line:IDocumentViewNote
+	Space Bottom:2
+	
+[Line:IDocumentViewNote]
+	Field:Simple Field
+	Local:Field:Simple Field:Set as:"**Select the file path by hitting space bar and click open button to view the document"
+	Local:Field:Simple Field:Full Width:Yes
+	Local:Field:Simple Field:Style:IDocViewHeaders
+	
+
+
+[Part:IDocumentFrame2]
+	Scroll:Vertical
+	Common Border:Yes
+	Lines:IDocumentViewHeader,IDocumentViewBody
+	Repeat:IDocumentViewBody:IDocumentPathColl
+	
+[Line:IDocumentViewHeader]
+	Fields:IDocumentSlno,IDocumentCPath,IDocumetFileSize
+	Border:thintopbottom
+	Local:Field:IDocumentSlno:Set as:"Slno"
+	Local:Field:IDocumentCPath:Set as:"Path"
+	Local:Field:IDocumetFileSize:Set as:"Size(bytes)"
+	Local:Field:default:Align:Left
+	Local:Field:default:Style:IDocViewHeaders
+	
+[Line:IDocumentViewBody]
+	Fields:IDocumentSlno,IDocumentCpath,IDocumetFileSize
+	Local:Field:default:Align:Left
+	Local:Field:default:Style:IDocViewBody
+	
+[Field:IDocumentSlno]
+	Use:SimpleField
+	Set as:$$Line
+	Width:8
+	Border:thinright
+	
+[Field:IDocumentCPath]
+	Use:SimpleField
+	Set as:##MsFileName[$$Line]
+	Width:80
+	Storage:IDocumentCPath
+	Border:thinright
+	
+[Field:IDocumetFileSize]
+	Use:SimpleField
+	Set as:($$FileSize:##MsFileName[$$Line])
+	Full Width:Yes
+	
+;; Styles
+
+[Style:IDocViewHeaders]
+	Height:12
+	Font:Sans-serif
+	Bold:Yes
+	
+[Style:IDocViewBody]
+	Height:12
+	Font:Sans-serif
+	Bold:No
